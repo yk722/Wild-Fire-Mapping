@@ -2,47 +2,7 @@
 Here’s a roadmap to build the mobile app, divided into three key groups: **Object Detection**, **Terrain Pathfinding**, and **Mobile Integration**.
 
 ### 1. **Object Detection Group**:
-   - **Goal**: Detect forest fires or other relevant objects in terrain videos.
-   - **Key Tasks**:
-     - **Collect and preprocess video data**:
-       - Gather terrain videos with forest fires or simulate such environments.
-       - Convert video into frames and prepare datasets (annotated images with fires).
-     - **Develop object detection model**:
-       - Use Python libraries like TensorFlow, Keras, or PyTorch for training.
-       - Train a deep learning model (e.g., YOLO, SSD) for fire detection.
-     - **Optimize detection for mobile use**:
-       - Quantize the model to reduce size and inference time.
-       - Use TensorFlow Lite or PyTorch Mobile for deploying the model on mobile devices.
-     - **Real-time detection integration**:
-       - Implement a pipeline to process incoming video frames in real-time, detecting objects like fire.
 
 ### 2. **Terrain Pathfinding Group**:
-   - **Goal**: Generate a path with the lowest elevation grade for firefighters.
-   - **Key Tasks**:
-     - **Elevation data collection**:
-       - Obtain terrain elevation data through APIs (Google Maps Elevation API or similar).
-       - Parse elevation maps corresponding to the terrain video.
-     - **Algorithm for pathfinding**:
-       - Implement or modify a pathfinding algorithm (A*, Dijkstra) that takes elevation into account.
-       - Optimize the algorithm to favor lower elevation grades for easier traversal.
-     - **Path visualization**:
-       - Develop a system to display the computed path over the video.
-       - Implement an overlay on video frames or use a 3D map visualization library (e.g., Plotly, Matplotlib).
 
 ### 3. **Mobile Integration Group**:
-   - **Goal**: Create a functional mobile app that integrates video input, object detection, and pathfinding.
-   - **Key Tasks**:
-     - **App framework and structure**:
-       - Use Kivy, Flask, or BeeWare to create the mobile interface.
-       - Set up video input (via phone camera or external source) and output (displaying real-time video and results).
-     - **Video processing on mobile**:
-       - Ensure efficient video capture and processing without lag, using libraries like OpenCV.
-       - Integrate with real-time object detection and pathfinding.
-     - **User interface (UI) and experience (UX)**:
-       - Design a clean interface for firefighters to easily input terrain videos.
-       - Display detected fires and the suggested path in a user-friendly manner.
-     - **Deploy and test**:
-       - Test the app on various devices to ensure performance.
-       - Gather user feedback and refine functionality and usability.
-
-Each group will be responsible for its portion but should collaborate closely, especially when integrating the object detection model with the pathfinding algorithm and ensuring the app performs efficiently on mobile devices.
