@@ -6,4 +6,9 @@
 
 {% block body %}
 <h1> WILDFIRE!! </h1>
+
+
+ <form action="{{url_for('run_sim')}}" method="POST">
+    <button type="submit">Run sim</button>
+</form>
 {% endblock %}
