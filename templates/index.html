@@ -1,14 +1,68 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>title</title>
+<title>Wildfire Mapping</title>
 {% endblock %}
 
 {% block body %}
-<h1> WILDFIRE!! </h1>
 
+<div class="title_box">
+    <h1> Wildfire Mapping</h1>
+</div>
 
- <form action="{{url_for('run_sim')}}" method="POST">
-    <button type="submit">Run sim</button>
-</form>
+<div class="main_content">
+    <div class="sidebar">
+        <!-- <form action="{{url_for('search')}}" method="POST">
+            <button type="submit">Search</button>
+        </form>
+    
+        <form action="{{url_for('run_sim')}}" method="POST">
+            
+            <input type="submit" value="search">
+        </form> -->
+        
+        <form class="search_bar" action="{{ url_for('search') }}" method="POST">
+            <input type="text" name="search_term" placeholder="Search" required />
+            <button type="submit">
+                <i data-feather="search"></i>
+            </button>
+        </form>
+        
+        
+        <div class="start-button">
+            <button>
+                <span>Start</span>
+                <i data-feather="play"></i>
+            </button>
+        </div>
+        
+    </div>
+
+    <div class="map_vew">
+        <h>map view space</h>
+        <div id="map"></div>
+        
+        <div class="button_container">
+            <div class="zoom-in_button">
+                <button>
+                    <i data-feather="plus"></i>
+                </button>
+            </div>
+
+            <div class="zoom-out_button">
+                <button>
+                    <i data-feather="minus"></i>
+                </button>
+            </div>
+
+            <div class="map-pin_button">
+                <button>
+                    <i data-feather="map-pin"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+ 
 {% endblock %}
