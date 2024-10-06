@@ -40,6 +40,19 @@
     box-sizing: border-box;
 }
 
+button {
+    font-family: "Lato", sans-serif;
+    font-size: large;
+}
+
+input::placeholder {
+    font-family: "Lato", sans-serif;
+    font-size: large;
+    /* padding-left: 10px; */
+    align-self: center;
+}
+
+
 .title_box{
     background-color: var(--BLUE_500);
     text-align: center;
@@ -62,6 +75,7 @@
     height: calc(100vh - 50px);
     flex: 1;
     background-color: var(--GRAY_200);
+    flex-direction: row;
 }
 
 .sidebar{
@@ -95,8 +109,8 @@
     display: flex;
     padding: 3%;
     border-radius: 30px;
-    
-    /* margin: 2%; */
+    border-color: var(--BLUE_600);
+    /* margin: 3%; */
 }
 
 .start-button {
@@ -168,17 +182,18 @@
 .map_view{
     display: flex;
     flex: 3;
-    width: 80%;
-    background-color: var(--GRAY_200);
+    background-color: var(--GRAY_100);
+    margin: 10px;
 
 }
 
-#map {
-    margin:4%;
-    /* padding: 3%; */
-    /* background-color: var(--BLUE_500); */
-    
+.map_view iframe {
+    width: 100%;
+    height: 100%;
+    border: none;  
 }
+
+
 
 .button_container{
     float:right;
