@@ -59,7 +59,7 @@ def home():
                     border-radius: 30px;
                     border: none;
                     color: #2e90fa;
-                    background-color: #f9fafb'>
+                    background-color: #e4e7ec'>
                     Set as Start Point
                 </button>
             </div>
@@ -137,50 +137,6 @@ def add_wildfire_layer(map):
         ))
 
     map.add_child(wildfire_layer)
-
-def custom_code(popup_variable_name, map_variable_name, folium_port):
-    return '''
-            // custom code
-            function latLngPop(e) {
-                %s
-                    .setLatLng(e.latlng)
-                    .setContent(`
-                        lat: ${e.latlng.lat}, lng: ${e.latlng.lng}
-                        <button onClick="
-                            fetch('http://localhost:%s', {
-                                method: 'POST',
-                                mode: 'no-cors',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    latitude: ${e.latlng.lat},
-                                    longitude: ${e.latlng.lng}
-                                })
-                            });
-
-                            L.marker(
-                                [${e.latlng.lat}, ${e.latlng.lng}],
-                                {}
-                            ).addTo(%s);
-                        "> Store Coordinate </button>
-                        <button onClick="
-                            fetch('http://localhost:%s', {
-                                method: 'POST',
-                                mode: 'no-cors',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: 'q'
-                            });
-                        "> Quit </button>
-                    `)
-                    .openOn(%s);
-            }
-            // end custom code
-    ''' % (popup_variable_name, folium_port, map_variable_name, folium_port, map_variable_name)
 
 if __name__ == "__main__":
     app.run(debug=True)
