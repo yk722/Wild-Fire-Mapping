@@ -3,6 +3,7 @@ import folium
 from folium.plugins import Geocoder
 import geocoder
 import json
+import csv
 
 app = Flask(__name__)
 app.secret_key = 'session' 
@@ -31,6 +32,8 @@ def home():
             user_loc   
         )      
 
+        # Getting the user current location
+        # and let the user to use it as the start posisition
         popup_html = folium.Html(f"""
             <div style='font-family: "Lato", sans-serif;'>
                 <h4>Current Location</h4>
@@ -65,7 +68,7 @@ def home():
             </div>
         """, script=True)
 
-
+        # Displying the popup pin on the map
         popup = folium.Popup(popup_html, max_width=500)
 
         folium.Marker([lat, lon], popup=popup).add_to(map)
@@ -82,6 +85,8 @@ def home():
 
     return render_template('index.html', iframe=iframe, start_loc=start_loc)
 
+
+# Getting user's current location
 @app.route('/get_current_loc', methods=['POST'])
 def get_current_loc():
     if request.is_json:
@@ -92,6 +97,7 @@ def get_current_loc():
     else:
         return jsonify({'error': 'Invalid request, JSON data expected.'}), 415 
 
+# Setting the start point
 @app.route('/set_start_point', methods=['POST'])
 def set_start_point():
     if request.is_json:
@@ -106,26 +112,32 @@ def set_start_point():
     else:
         return jsonify({'error': 'Invalid request, JSON data expected.'}), 415 
 
-
 # button for finding the shortest path
 @app.route('/run_sim', methods=['POST'])
 def run_sim():
-    # add button function
+    # TODO: need to add proper button function
     print("Button clicked")
-    return redirect(url_for('home'))  # Redirect back to home after processing
+    return redirect(url_for('home'))  
+
+def fetch_wildfire_data():
+    with open('csvFiles/AnyConv.com__MODIS_C6_1_Canada_24h.csv', mode='r') as file:
+        reader = csv.DictReader(file)
+        wildfire_coordinates = []
+
+        for line in reader:    
+            # print(line['LATITUDE,N,32,10'])
+            # print(line['LONGITUDE,N,32,10'])
+            wildfire_coordinates.append({
+                "latitude": line['LATITUDE,N,32,10'], 
+                "longitude": line['LONGITUDE,N,32,10']
+            })
+
+        return wildfire_coordinates
 
 def add_wildfire_layer(map):
     # TODO: Link to actual wildfire data
-    wildfire_coordinates = [
-        {
-            "latitude": 49.26970086788797, 
-            "longitude": -123.25513912793387
-        },
-        {
-            "latitude": 49.26610568647218, 
-            "longitude": -123.2369701635495
-        }
-    ]
+
+    wildfire_coordinates = fetch_wildfire_data()
 
     wildfire_layer = folium.FeatureGroup(name="Wildfire Locations")
     for coordinate in wildfire_coordinates:
