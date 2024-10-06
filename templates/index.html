@@ -7,7 +7,7 @@
 {% block body %}
 
 <div class="title_box">
-    <h1> Wildfire Mapping</h1>
+    <h2> Wildfire Mapping</h2>
 </div>
 
 <div class="main_content">
@@ -39,10 +39,8 @@
     </div>
 
     <div class="map_vew">
-        <h>map view space</h>
-        <div id="map"></div>
-        
-        <div class="button_container">
+        <div id="map" >{{ iframe|safe }}</div>    
+        <!-- <div class="button_container">
             <div class="zoom-in_button">
                 <button>
                     <i data-feather="plus"></i>
@@ -60,7 +58,7 @@
                     <i data-feather="map-pin"></i>
                 </button>
             </div>
-        </div>
+        </div> -->
     </div>
 
 </div>

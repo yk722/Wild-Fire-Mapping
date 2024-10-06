@@ -44,22 +44,24 @@
     background-color: var(--BLUE_500);
     text-align: center;
     color: var(--GRAY_200);
-    padding: 3%;
+    padding: 10px;
     display: flex;
-    justify-content: center;
+    /* justify-content: center;
     justify-items: center;
-    align-items: center;  
+    align-items: center;   */
 }
 
-.title_box h1 {
-    /* text-align: center; */
-    align-content: center;
+.title_box h2 {
+    text-align: left;
+    padding-left: 3%;
+    /* align-content: left; */
 }
 
 .main_content{
     display: flex;
     height: calc(100vh - 50px);
     flex: 1;
+    background-color: var(--GRAY_200);
 }
 
 .sidebar{
@@ -101,8 +103,8 @@
     color: var(--GRAY_25);
     align-content: center;
     display: flex;
-    /* align-items: center; */
-    /* justify-content: center; */
+    align-items: center;
+    justify-content: center;
     flex-direction: row;
     justify-items: center;
 }
@@ -117,6 +119,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     
 }
 
@@ -126,7 +129,7 @@
     align-items: center;
 }
 
-.zoom-in_button button {
+/* .zoom-in_button button {
     display: flex;
     padding: 5%;
     background-color: var(--GRAY_200);
@@ -160,16 +163,21 @@
     cursor: pointer;
     margin: 2%;
     
-}
+} */
 
 .map_view{
     display: flex;
-    flex-grow: 1;
+    flex: 3;
+    width: 80%;
+    background-color: var(--GRAY_200);
+
 }
 
-#map #map {
-    height: 500px;
-    width: 80%; 
+#map {
+    margin:4%;
+    /* padding: 3%; */
+    /* background-color: var(--BLUE_500); */
+    
 }
 
 .button_container{
