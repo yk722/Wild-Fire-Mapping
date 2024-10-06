@@ -56,14 +56,15 @@ class TestTerrainGraph(unittest.TestCase):
         self.assertTrue(terrainG.graph.has_edge((1,2), (1,3)))
         self.assertTrue(terrainG.graph.has_edge((1,3), (1,4)))
 
+    # Test raster data
     def testTIF(self):
-        rasterPath = os.path.join(os.getcwd(), 'bc_xc100m_bcalb', 'bc_xc100m_bcalb_20070116.tif')
+        rasterPath = os.path.join(os.getcwd(), 'TestImageData', 'SmallPortionVanE.tif')
         terrainG = TerrainGraph(rasterPath)
 
-        nx.draw(terrainG.graph, node_size=350, edge_color='gray')
+        #nx.draw(terrainG.graph, node_size=350, edge_color='gray')
 
-        plt.title("test")
-        plt.show()
+        #plt.title("test")
+        #plt.show()
 
 if __name__ == '__main__':
     unittest.main()

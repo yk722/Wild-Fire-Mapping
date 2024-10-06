@@ -28,8 +28,10 @@ class TerrainGraph:
     """
     def __init__(self, elevationImagePath):
         self.elevationImage = rasterio.open(elevationImagePath)
+        # transform = self.elevationImage.transform
         # self.heatMap = Image.open(heatMap)
         self.graph = nx.Graph()
+        
 
         elevation_data = self.elevationImage.read(1)
 
@@ -47,7 +49,7 @@ class TerrainGraph:
             for i in range(width):
                 currCoordinate = (i, j)
                 self.graph.add_node(currCoordinate)
-                nx.set_node_attributes(self.graph elevation[j,i])
+                nx.set_node_attributes(self.graph, elevation_data[j,i], 'elevation')
                 currentRow.append(currCoordinate)
 
                 # TODO: Add appropriate edges based on the intensities on the elevationImage
@@ -88,11 +90,12 @@ class TerrainGraph:
         - currentLocation: starting location of the user
         - target: destination of the path
         - weight: the calculated weight given in each of the nodes
+        - transform: variable that helsp in calculating the coordinates
     """
-    def findBestPath(self, currentLocation, target, weight):
+    def findBestPath(self, currentLocation, target, weight, transform):
         # TODO: Attempt to find shortest path without water, then find longest path with water
-        path = nx.shortest_path(self.graph, currentLocation, target, weight = 'weight')
-
+        # path = nx.shortest_path(self.graph, currentLocation, target, weight = 'weight')
+        # geo_path = [transform *(x,y) for x,y in path]
         return path
 
     def updateMap(self, newElevationMap, newHeatMap):
