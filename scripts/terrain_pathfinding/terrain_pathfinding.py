@@ -20,6 +20,21 @@ class TerrainGraph:
     updateInterval = 5 # Unit in seconds
 
     """
+    Function takes in the difference in elevation of the current pixel and the next pixel
+    Requires:
+        - elevation_diff: difference in elevation between the current pixel and next pixel
+        - current_pixel: the pixel array that has height stored in it
+        - neighbor_pixel: the pixel array next to the current_pixel that holds the height
+    """
+    def dynamic_cost(elevation_diff, current_pixel, neighbor_pixel):
+        cost = elevation_diff
+
+        #in progress
+        #if 
+
+        return cost
+
+    """
     Function takes in a valid path to an image and converts it to a graph
     Requires:
         - elevationImage: image path with valid height data
@@ -40,48 +55,22 @@ class TerrainGraph:
         width = self.elevationImage.width
         height = self.elevationImage.height
 
-        # Rows along the image
-        prevRow = []
-        currentRow = []
-
         for j in range(height):
-            prevCoordinate = ()
             for i in range(width):
                 currCoordinate = (i, j)
                 self.graph.add_node(currCoordinate)
                 nx.set_node_attributes(self.graph, elevation_data[j,i], 'elevation')
-                currentRow.append(currCoordinate)
 
                 # TODO: Add appropriate edges based on the intensities on the elevationImage
-                if j > 0: # Connect node from above
-                    # above_neighbor = (i,j-1)
-                    # elevation_diff = abs(elevation_data[j,i]-elevation_data[j-1,i])
-                    # weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j-1,i])
-                    self.graph.add_edge((i, j-1),currCoordinate)
-                if i > 0: # Connect node from left side
-                    # left_neighbor = (i-1,j)
-                    # elevation_diff = abs(elevation_data[j,i]-elevation_data[j,i-1])
-                    # weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j,i-1])
-                    self.graph.add_edge(prevCoordinate,currCoordinate)
+                if j < height: # Connect node from below
+                    elevation_diff = abs(elevation_data[j,i]-elevation_data[j+1,i])
+                    weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j+1,i])
+                    self.graph.add_edge((i, j+1),currCoordinate,weight=weight)
+                if i < width: # Connect node from right side
+                    elevation_diff = abs(elevation_data[j,i]-elevation_data[j,i+1])
+                    weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j,i+1])
+                    self.graph.add_edge((i+1,j),currCoordinate,weight=weight)
 
-                prevCoordinate = currCoordinate
-
-            prevRow = currentRow
-
-    """
-    Function takes in the difference in elevation of the current pixel and the next pixel
-    Requires:
-        - elevation_diff: difference in elevation between the current pixel and next pixel
-        - current_pixel: the pixel array that has height stored in it
-        - neighbor_pixel: the pixel array next to the current_pixel that holds the height
-    """
-    def dynamic_cost(elevation_diff, current_pixel, neighbor_pixel):
-        cost = elevation_diff
-
-        #in progress
-        #if 
-
-        return cost
 
     """
     Function finds the best possible path using the graph, starting location, target location, and weight
@@ -94,7 +83,7 @@ class TerrainGraph:
     """
     def findBestPath(self, currentLocation, target, weight, transform):
         # TODO: Attempt to find shortest path without water, then find longest path with water
-        # path = nx.shortest_path(self.graph, currentLocation, target, weight = 'weight')
+        path = nx.shortest_path(self.graph, currentLocation, target, weight = 'weight')
         # geo_path = [transform *(x,y) for x,y in path]
         return path
 
