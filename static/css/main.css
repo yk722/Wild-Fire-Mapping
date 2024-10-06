@@ -1,132 +1,147 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
 :root {
-    margin: 0;
+  margin: 0;
 
-    --BLUE_25: #f5faff;
-    --BLUE_50: #eff8ff;
-    --BLUE_100: #d1e9ff;
-    --BLUE_200: #b2ddff;
-    --BLUE_300: #84caff;
-    --BLUE_400: #53b1fd;
-    --BLUE_500: #2e90fa;
-    --BLUE_600: #1570ef;
-    --BLUE_700: #175cd3;
-    --BLUE_800: #1849a9;
-    --BLUE_900: #194185;
-    --BLUE_950: #102a56;
+  --BLUE_25: #f5faff;
+  --BLUE_50: #eff8ff;
+  --BLUE_100: #d1e9ff;
+  --BLUE_200: #b2ddff;
+  --BLUE_300: #84caff;
+  --BLUE_400: #53b1fd;
+  --BLUE_500: #2e90fa;
+  --BLUE_600: #1570ef;
+  --BLUE_700: #175cd3;
+  --BLUE_800: #1849a9;
+  --BLUE_900: #194185;
+  --BLUE_950: #102a56;
 
-    --GRAY_25: #fcfcfd;
-    --GRAY_50: #f9fafb;
-    --GRAY_100: #f2f4f7;
-    --GRAY_200: #e4e7ec;
-    --GRAY_300: #d0d5dd;
-    --GRAY_400: #98a2b3;
-    --GRAY_500: #667085;
-    --GRAY_600: #475467;
-    --GRAY_700: #344054;
-    --GRAY_800: #1d2939;
-    --GRAY_900: #101828;
-    --GRAY_950: #0c111d;
+  --GRAY_25: #fcfcfd;
+  --GRAY_50: #f9fafb;
+  --GRAY_100: #f2f4f7;
+  --GRAY_200: #e4e7ec;
+  --GRAY_300: #d0d5dd;
+  --GRAY_400: #98a2b3;
+  --GRAY_500: #667085;
+  --GRAY_600: #475467;
+  --GRAY_700: #344054;
+  --GRAY_800: #1d2939;
+  --GRAY_900: #101828;
+  --GRAY_950: #0c111d;
 
-    background-color: var(--GRAY_100);
-    color: var(--GRAY_900);
-    font-family: "Lato", sans-serif;
+  background-color: var(--GRAY_100);
+  color: var(--GRAY_900);
+  font-family: "Lato", sans-serif;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.title_box{
-    background-color: var(--BLUE_500);
-    text-align: center;
-    color: var(--GRAY_200);
-    padding: 3%;
-    display: flex;
-    justify-content: center;
+button {
+  font-family: "Lato", sans-serif;
+  font-size: large;
+  border-radius: 30px;
+}
+
+input::placeholder {
+  font-family: "Lato", sans-serif;
+  font-size: large;
+  /* padding-left: 10px; */
+  align-self: center;
+}
+
+.title_box {
+  background-color: var(--BLUE_500);
+  text-align: center;
+  color: var(--GRAY_200);
+  padding: 10px;
+  display: flex;
+  /* justify-content: center;
     justify-items: center;
-    align-items: center;  
+    align-items: center;   */
 }
 
-.title_box h1 {
-    /* text-align: center; */
-    align-content: center;
+.title_box h2 {
+  text-align: left;
+  padding-left: 3%;
+  /* align-content: left; */
 }
 
-.main_content{
-    display: flex;
-    height: calc(100vh - 50px);
-    flex: 1;
+.main_content {
+  display: flex;
+  height: calc(100vh - 50px);
+  flex: 1;
+  background-color: var(--GRAY_200);
+  flex-direction: row;
 }
 
-.sidebar{
-    background-color: var(--GRAY_25);
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    padding: 3%;
-    
+.sidebar {
+  background-color: var(--GRAY_25);
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  padding: 3%;
 }
 
 .search_bar {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 2%;
-    /* margin: 2%; */
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 2%;
+  /* margin: 2%; */
 }
 
 .search_bar button {
-    display: flex;
-    padding: 2%;
-    background-color: var(--BLUE_500);
-    color: var(--GRAY_25);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    margin: 2%;
+  display: flex;
+  padding: 2%;
+  background-color: var(--BLUE_500);
+  color: var(--GRAY_25);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 2%;
 }
 
 .search_bar input {
-    display: flex;
-    padding: 3%;
-    border-radius: 30px;
-    
-    /* margin: 2%; */
+  display: flex;
+  padding: 3%;
+  border-radius: 30px;
+  border-color: var(--BLUE_600);
+  /* margin: 3%; */
 }
 
 .start-button {
-    color: var(--GRAY_25);
-    align-content: center;
-    display: flex;
-    /* align-items: center; */
-    /* justify-content: center; */
-    flex-direction: row;
-    justify-items: center;
+  color: var(--GRAY_25);
+  align-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  justify-items: center;
 }
 
 .start-button button {
-    width: 100%;
-    padding: 10px;
-    background-color: var(--BLUE_500);
-    color: var(--GRAY_25);
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    
+  width: 100%;
+  padding: 10px;
+  background-color: var(--BLUE_500);
+  color: var(--GRAY_25);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .start-button i {
-    /* color: var(--GRAY_25); */
-    display: flex;
-    align-items: center;
+  /* color: var(--GRAY_25); */
+  display: flex;
+  align-items: center;
 }
 
-.zoom-in_button button {
+/* .zoom-in_button button {
     display: flex;
     padding: 5%;
     background-color: var(--GRAY_200);
@@ -160,19 +175,21 @@
     cursor: pointer;
     margin: 2%;
     
+} */
+
+.map_view {
+  display: flex;
+  flex: 3;
+  background-color: var(--GRAY_100);
+  margin: 10px;
 }
 
-.map_view{
-    display: flex;
-    flex-grow: 1;
+.map_view iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-#map #map {
-    height: 500px;
-    width: 80%; 
+.button_container {
+  float: right;
 }
-
-.button_container{
-    float:right;
-}
-   
