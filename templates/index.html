@@ -1,31 +1,26 @@
-{% extends 'base.html' %}
-
-{% block head %}
+{% extends 'base.html' %} {% block head %}
 <title>Wildfire Mapping</title>
-{% endblock %}
-
-{% block body %}
+{% endblock %} {% block body %}
 
 <div class="title_box">
-    <h2> Wildfire Mapping</h2>
+  <h2>Wildfire Mapping</h2>
 </div>
 
 <div class="main_content">
-    <div class="sidebar">
-        <div class="start-button">
-            <button>
-                <span>Start</span>
-                <i data-feather="play"></i>
-            </button>
-        </div>
-        
+  <div class="sidebar">
+    <!-- <div>
+      <h4>Start Point:</h4>
+      <h4>{{start_loc[0]}}, {{start_loc[1]}}</h4>
+    </div> -->
+    <div class="start-button">
+      <button>
+        <span>Start</span>
+        <i data-feather="play"></i>
+      </button>
     </div>
+  </div>
 
-    <div class="map_view">
-        {{ iframe|safe }}
-       
-    </div>
-
+  <div class="map_view">{{ iframe|safe }}</div>
 </div>
- 
+
 {% endblock %}
