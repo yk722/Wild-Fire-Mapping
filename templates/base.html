@@ -16,7 +16,10 @@
     {% block body %}{% endblock %}
   </body>
   <script>
-    feather.replace();
+     document.addEventListener("DOMContentLoaded", function() {
+        feather.replace();
+        getLocation();
+    });
 
     function getLocation() {
       if (navigator.geolocation) {
@@ -48,6 +51,6 @@
         });
     }
 
-    getLocation();
+    // getLocation();
   </script>
 </html>

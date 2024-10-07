@@ -40,10 +40,15 @@
   box-sizing: border-box;
 }
 
+p {
+  font-size: medium;
+}
+
 button {
   font-family: "Lato", sans-serif;
   font-size: large;
   border-radius: 30px;
+  margin-top: 20px;
 }
 
 input::placeholder {

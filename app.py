@@ -4,6 +4,67 @@ from folium.plugins import Geocoder
 import geocoder
 import json
 import csv
+from folium.elements import MacroElement
+from jinja2 import Template
+
+"""
+Overiding folium LatLngPopup to customize the popup content.
+"""
+class LatLngPopup(MacroElement):
+    """
+    When one clicks on a Map that contains a LatLngPopup,
+    a popup is shown that displays the latitude and longitude of the pointer.
+    """
+    _template = Template(u"""
+        {% macro script(this, kwargs) %}
+            var {{this.get_name()}} = L.popup();
+            function latLngPop(e) {
+                var lat = e.latlng.lat.toFixed(4);
+                var lon = e.latlng.lng.toFixed(4);
+
+                {{this.get_name()}}
+                    .setLatLng(e.latlng)
+                    .setContent(`
+                        <button onclick="fetch('/set_start_point', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                latitude: ${lat},
+                                longitude: ${lon}
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log('Result:', result.message);
+                         
+                            //update location on sidebar
+                            document.getElementById('startLocation').innerText = ${lat} + ', ' + ${lon};
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });"
+                        style='font-family: "Lato", sans-serif;
+                            font-size: medium;
+                            border-radius: 30px;
+                            border: none;
+                            color: #2e90fa;
+                            background-color: #e4e7ec;'>
+                            Set as Start Point
+                        </button>`
+                    )
+                    .openOn({{this._parent.get_name()}});
+            }
+            {{this._parent.get_name()}}.on('click', latLngPop);
+        {% endmacro %}
+    """)
+
+    def __init__(self):
+        super(LatLngPopup, self).__init__()
+        self._name = 'LatLngPopup'
+
 
 app = Flask(__name__)
 app.secret_key = 'session' 
@@ -25,13 +86,7 @@ def home():
         )
 
         add_wildfire_layer(map)
-        
-        user_loc = folium.ClickForMarker("<b>Lat:</b> ${lat}<br /><b>Lon:</b> ${lng}")
-
-        map.add_child(
-            user_loc   
-        )      
-
+    
         # Getting the user current location
         # and let the user to use it as the start posisition
         popup_html = folium.Html(f"""
@@ -73,9 +128,10 @@ def home():
 
         folium.Marker([lat, lon], popup=popup).add_to(map)
 
-        # map.add_child(folium.LatLngPopup())
+        map.add_child(LatLngPopup())
 
         Geocoder().add_to(map)
+
         map.get_root().width = "900px"
         map.get_root().height = "1000px"
         
@@ -84,7 +140,6 @@ def home():
         start_loc = session['start_location']
 
     return render_template('index.html', iframe=iframe, start_loc=start_loc)
-
 
 # Getting user's current location
 @app.route('/get_current_loc', methods=['POST'])
@@ -119,6 +174,12 @@ def run_sim():
     print("Button clicked")
     return redirect(url_for('home'))  
 
+"""
+Fetch wildfire data from a csv file.
+
+Outputs:
+    - wildfire_coordinates: an array containing coordinates with latitude and longitude.
+"""
 def fetch_wildfire_data():
     with open('csvFiles/AnyConv.com__MODIS_C6_1_Canada_24h.csv', mode='r') as file:
         reader = csv.DictReader(file)
@@ -134,9 +195,10 @@ def fetch_wildfire_data():
 
         return wildfire_coordinates
 
+"""
+Add markers for wildfire on the map.
+"""
 def add_wildfire_layer(map):
-    # TODO: Link to actual wildfire data
-
     wildfire_coordinates = fetch_wildfire_data()
 
     wildfire_layer = folium.FeatureGroup(name="Wildfire Locations")
