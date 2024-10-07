@@ -2,29 +2,18 @@ import psycopg2
 import pandas as pd
 
 conn = psycopg2.connect(
-    host="localhost", # add my ip address
+    host="128.189.228.90", # add my ip address
     dbname ="WIld-Fire-Mapping",
     user='postgres',
     password = "potato",
     port = 5432)
 
 cur = conn.cursor()
+with open(r'output.csv', 'r') as f:
+    # Notice that we don't need the csv module.
+    next(f) # Skip the header row.
+    cur.copy_from(f, 'complete', sep=',')
 
-query = """
-SELECT latitude, longitude, FRP FROM ire WHERE frp >300;
-"""
-#df = pd.read_sql(query, conn)
-
-cur.execute(query)
-while True:
-    row = cur.fetchone()
-    if row is None:  # No more rows
-        break
-    latitude, longitude, frp = row
-    print(f"Latitude: {latitude}, Longitude: {longitude}, FRP: {frp}")
-    print(latitude)
-    print(longitude)
-    print(frp)
-    
+conn.commit()
 cur.close()
 conn.close()
