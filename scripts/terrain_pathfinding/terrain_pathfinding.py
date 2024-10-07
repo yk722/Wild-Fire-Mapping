@@ -1,94 +1,146 @@
-import networkx as nx
-import rasterio
-from PIL import Image, ImageOps
-import numpy as np
-import matplotlib.pyplot as plt
+import sys 
+import os
 
-# TODO:
-# Update constructor to ensure that:
-# We create elevation based on heightmap
-# Update the nodes based on heat data passed in
-# Create a function that actively updates the terrain graph
+# Append path for node
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'node')))
+
+import networkx as nx
+from node import Node
+import numpy as np
+import rasterio
+import pandas as pd
 
 class TerrainGraph:
 
-    # Class fields
-    elevationImage = 0
-    heatImage = 0
-    elevationThreshold = 20
     graph = 0
-    updateInterval = 5 # Unit in seconds
+    width = 0
+    height = 0
+    latitudeLongitudeMapping = {}
 
     """
-    Function takes in the difference in elevation of the current pixel and the next pixel
+    Gets the desitination or target using the source of the fire and current location of user
     Requires:
-        - elevation_diff: difference in elevation between the current pixel and next pixel
-        - current_pixel: the pixel array that has height stored in it
-        - neighbor_pixel: the pixel array next to the current_pixel that holds the height
+        - file: input a csv file to extract the information of the wildfires and the source
+    Outputs:
+        - target: destination of the desired route and used to calculate path
     """
-    def dynamic_cost(elevation_diff, current_pixel, neighbor_pixel):
-        cost = elevation_diff
+    def get_destination(file):
+        csv_file = pd.read_csv(file)
 
-        #in progress
-        #if 
+        latitudes = csv_file['LATITUDE,N,32,10']
+        longitudes = csv_file['LONGITUDE,N,32,10']
+        power = csv_file['FRP,N,32,10']
 
-        return cost
+        source_FRP = max(power)
+        index = np.argmax(power)
+        target = (longitudes[index],latitudes[index])
+
+        return target
 
     """
-    Function takes in a valid path to an image and converts it to a graph
+    Unpacks a csv file from the user and outputs the altitude, latitude and longitude
     Requires:
-        - elevationImage: image path with valid height data
-        - heatMap: image path with temperature data
-        - both elevationImage and heatMap are of the same width and height
+        - file: input a csv file to extract the information of the wildfires and the source
+    Outputs:
+        - longitudes: outputs the longitude array containing the values of the longitudes
+        - latitudes: outputs the latitude array containing the values of the latitudes
+        - altitudes: outputs the altitude array containing the altitudes values
     """
-    def __init__(self, elevationImagePath):
-        self.elevationImage = rasterio.open(elevationImagePath)
-        # transform = self.elevationImage.transform
-        # self.heatMap = Image.open(heatMap)
+    def unpack_csv(file):
+        csv_file = pd.read_csv(file)
+
+        latitudes = csv_file['LATITUDE,N,32,10']
+        longitudes = csv_file['LONGITUDE,N,32,10']
+        altitudes = csv_file['Altitude']                #change its name
+
+        return longitudes,latitudes,altitudes
+
+    """
+    Initializes the graph for pathfinding
+    Requires:
+        - nodeMapping: a 2d array containing nodes (contains values of height, longitude and latitude)
+        - width: width of nodeMapping window
+        - height: height of nodeMapping window
+    """
+    def __init__(self, nodeMapping, width, height):
         self.graph = nx.Graph()
-        
+        self.width = width
+        self.height = height
 
-        elevation_data = self.elevationImage.read(1)
-
-        # We take the elevation image (perlin noise format or whatever format they they give)
-        # then generate the graph with each vertex having height information.
-        width = self.elevationImage.width
-        height = self.elevationImage.height
+        # Rows along the image
+        prevRow = []
+        currentRow = []
 
         for j in range(height):
+            prevCoordinate = ()
             for i in range(width):
                 currCoordinate = (i, j)
+                if nodeMapping == None:
+                    currentRow.append(None)
+                    continue
+
                 self.graph.add_node(currCoordinate)
-                nx.set_node_attributes(self.graph, elevation_data[j,i], 'elevation')
+                self.graph.nodes[currCoordinate]['elevation'] = nodeMapping[j][i].elevation
+                self.graph.nodes[currCoordinate]['longitude'] = nodeMapping[j][i].longitude
+                self.graph.nodes[currCoordinate]['latitude'] = nodeMapping[j][i].latitude
 
-                # TODO: Add appropriate edges based on the intensities on the elevationImage
-                if j < height: # Connect node from below
-                    elevation_diff = abs(elevation_data[j,i]-elevation_data[j+1,i])
-                    weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j+1,i])
-                    self.graph.add_edge((i, j+1),currCoordinate,weight=weight)
-                if i < width: # Connect node from right side
-                    elevation_diff = abs(elevation_data[j,i]-elevation_data[j,i+1])
-                    weight = dynamic_cost(elevation_diff, elevation_data[j,i],elevation_data[j,i+1])
-                    self.graph.add_edge((i+1,j),currCoordinate,weight=weight)
+                currentRow.append(currCoordinate)
+                self.latitudeLongitudeMapping.update({(nodeMapping[j][i].latitude, nodeMapping[j][i].longitude) : (i, j)})
 
+                if j > 0 and prevRow[i] != None: # Connect node from above
+                    elevation_diff = abs(nodeMapping[j][i].elevation - nodeMapping[j-1][i].elevation)
+                    self.graph.add_edge((i, j-1),currCoordinate, weight=elevation_diff)
+
+                if i > 0 and currentRow[len(currentRow) - 1] != None: # Connect node from left side
+                    elevation_diff = abs(nodeMapping[j][i].elevation - nodeMapping[j][i-1].elevation)
+                    self.graph.add_edge(prevCoordinate, currCoordinate, weight=elevation_diff)
+
+                prevCoordinate = currCoordinate
+
+            prevRow = currentRow
+            currentRow = []
 
     """
-    Function finds the best possible path using the graph, starting location, target location, and weight
+    Function finds the best possible path if given the start point of the search and the end
     Requires:
-        - self.graph: location wehre the graph is stored at
-        - currentLocation: starting location of the user
-        - target: destination of the path
-        - weight: the calculated weight given in each of the nodes
-        - transform: variable that helsp in calculating the coordinates
+        - source: the source/starting point of the search (latitude, longitude)
+        - dest: the end point of our search (latitude, longitude)
+    Returns:
+        - A list of longitudes that map the path from point A to point B
     """
-    def findBestPath(self, currentLocation, target, weight, transform):
-        # TODO: Attempt to find shortest path without water, then find longest path with water
-        path = nx.shortest_path(self.graph, currentLocation, target, weight = 'weight')
-        # geo_path = [transform *(x,y) for x,y in path]
-        return path
+    def findBestPath(self, source, dest):
+        sourceCoordinate = self.convertLatitudeLongitude(source)
+        destCoordinate = self.convertLatitudeLongitude(dest)
+        shortestPath = nx.shortest_path(self.graph, sourceCoordinate, destCoordinate, weight='weight')
 
-    def updateMap(self, newElevationMap, newHeatMap):
-        self.elevationImage = Image.open(newElevationMap)
-        self.heatMap = Image.open(newHeatMap)
+        print(shortestPath)
 
-    
+        coordinateList = []
+        for point in shortestPath:
+            coordinateList.append((self.graph.nodes[point]['latitude'], self.graph.nodes[point]['longitude']))
+            
+        return coordinateList
+
+    """
+    Gives width,height coordinates of a node given the latitude and longitude
+    Requires:
+        - positioning: a tuple in the form (latitude, longitude)
+    Returns:
+        - The equivalent tuple at the given latitude and longitude
+    """
+    def convertLatitudeLongitude(self, positioning): 
+        return self.latitudeLongitudeMapping[positioning]
+
+    # TODO: Implement a function to update individual nodes to avoid having to recall the constructor and rebuild
+    #       the entire graph
+    """
+    Update attributes of the map instead of reconstructing it
+    Requires:
+        - positioning: the position of the node as (latitude, longitude)
+        - attributeKey: the name of the attribute
+        - arrributeValue: the new value of the attribute
+    Returns:
+        - Nothing
+    """
+    def updateNode(self, positioning, attributeKey, attributeValue):
+        print('hi')
