@@ -9,7 +9,7 @@ output_file = "/home/dibbo-roy/Wild-Fire-Mapping/DataImages/output.csv"  # Path 
 df = pd.read_csv(input_file, sep=' ', header=None)
 
 # Assigning default column names (if not provided in .xyz file)
-df.columns = ["Latitude", "Longitude", "Altitude"]
+df.columns = ["Longitude", "Latitude", "Altitude"]
 
 # Save DataFrame to .csv file
 df.to_csv(output_file, index=False)
