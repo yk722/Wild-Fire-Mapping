@@ -6,6 +6,7 @@ import json
 import csv
 from folium.elements import MacroElement
 from jinja2 import Template
+from flask_socketio import SocketIO, send, emit
 
 """
 Overiding folium LatLngPopup to customize the popup content.
@@ -67,7 +68,9 @@ class LatLngPopup(MacroElement):
 
 
 app = Flask(__name__)
-app.secret_key = 'session' 
+socketio = SocketIO(app)
+
+app.secret_key = 'session'
 
 @app.route('/')
 def home():
@@ -213,4 +216,4 @@ def add_wildfire_layer(map):
     map.add_child(wildfire_layer)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
